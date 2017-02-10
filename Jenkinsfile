@@ -15,6 +15,7 @@ def BUILD_PUBLISH_QA_STAGE_SUCCESS='Hi, Build successfully published to given re
 def BUILD_PUBLISH_FAILED='Hi, Build publish failed, please check attached log file.'
 
 node() {
+    echo"environment "+env
     String branchName = env.BRANCH_NAME
     echo" branch name "+branchName
     try {
@@ -115,7 +116,7 @@ node() {
     }
 
     def sendEmails(emailRecipient,msg,pattern,logAttach) {
-        emailext attachLog: logAttach,body: msg+"\n"+GIT_COMMIT,attachmentsPattern:pattern, subject: '$PROJECT_NAME - Build # $BUILD_NUMBER -'+currentBuild.result, to:emailRecipient
+        emailext attachLog: logAttach,body: msg+"\n"+env.GIT_COMMIT,attachmentsPattern:pattern, subject: '$PROJECT_NAME - Build # $BUILD_NUMBER -'+currentBuild.result, to:emailRecipient
     }
 
   // stage ('upload')
