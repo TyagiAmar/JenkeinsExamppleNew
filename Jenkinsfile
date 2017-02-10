@@ -15,9 +15,10 @@ def BUILD_PUBLISH_QA_STAGE_SUCCESS='Hi, Build successfully published to given re
 def BUILD_PUBLISH_FAILED='Hi, Build publish failed, please check attached log file.'
 
 node() {
-    echo"environment "+env
+    echo"environment "+env.toString()
     String branchName = env.BRANCH_NAME
     echo" branch name "+branchName
+    echo" GIT COMMIT name "+env.GIT_COMMIT
     try {
             stage ('Checkout'){
               checkout scm
