@@ -19,7 +19,6 @@ node() {
     String branchName = env.BRANCH_NAME
     echo" branch name "+branchName
     echo" GIT COMMIT name "+env.GIT_COMMIT
-    printenv
     try {
             stage ('Checkout'){
               checkout scm
