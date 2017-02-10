@@ -1,4 +1,5 @@
 apply plugin: 'com.android.application'
+apply from: 'versioning.gradle'
 
 android {
     compileSdkVersion 25
@@ -7,14 +8,53 @@ android {
         applicationId "amar.tyagi.com.jenkinsnew"
         minSdkVersion 23
         targetSdkVersion 25
-        versionCode 1
-        versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        versionCode buildVersionCode()
+        versionName "${VERSION_NAME}"
+        project.version = android.defaultConfig.versionName
+        def APP_VERSION = "APP_VERSION"
+        buildConfigField "String", APP_VERSION, "\"${VERSION_NAME.substring(0,VERSION_NAME.lastIndexOf(".")).toString()}\""
+        multiDexEnabled true
     }
+    signingConfigs {
+        release {
+            storeFile file("${RELEASE_SIGNING_STORE_KEYSTORE}")
+            storePassword "${RELEASE_SIGNING_STORE_PASSWORD}"
+            keyAlias "${RELEASE_SIGNING_KEY_ALAIS}"
+            keyPassword "${RELEASE_SIGNING_KEY_PASSWORD}"
+        }
+    }
+
     buildTypes {
         release {
-            minifyEnabled false
+            debuggable false
+            minifyEnabled true
+            shrinkResources true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.release
+
+        }
+        debug{
+            debuggable true
+            minifyEnabled false
+            shrinkResources false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+
+    }
+
+    applicationVariants.all { variant ->
+        variant.outputs.each { output ->
+            def project = "Jenkinsnew"
+            def SEP = "_"
+            def buildType = variant.variantData.variantConfiguration.buildType.name
+            def version = variant.versionName
+            def date = new Date();
+            def formattedDate = date.format('ddMMyy_HHmm')
+
+            def newApkName = project + SEP + buildType + SEP + version + SEP + formattedDate + ".apk"
+
+            output.outputFile = new File(output.outputFile.parent, newApkName)
         }
     }
 }
