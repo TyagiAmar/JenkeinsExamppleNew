@@ -27,9 +27,9 @@ node() {
                 // todo one time
                 sh 'chmod a+x ./gradlew'
                 if(branchName.startsWith('release'))
-                    sh './gradlew clean assemblerelease'
+                    sh './gradlew clean assembleRelease'
                 else
-                    sh './gradlew clean assemblerelease'
+                    sh './gradlew clean assembleDebug'
                 if(currentBuild.previousBuild!=null && currentBuild.previousBuild.result!=null && !currentBuild.previousBuild.result.toString().equals('SUCCESS'))
                 {
                      sendEmails(DEV_EmailRecipients,BUILD_SUCCESS_AFTER_FAILED,'',false)
