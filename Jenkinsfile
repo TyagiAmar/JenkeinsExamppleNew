@@ -26,20 +26,22 @@ node() {
             {
                 // todo one time
                 sh 'chmod a+x ./gradlew'
-                if(branchName.startsWith('release'))
+                sh './gradlew clean lint assemble'
+                /*if(branchName.startsWith('release'))
                     sh './gradlew clean assembleRelease'
                 else
-                    sh './gradlew clean assembleDebug'
+                    sh './gradlew clean assembleDebug'*/
+                androidLint canComputeNew: false, defaultEncoding: '', healthy: '', pattern: '**/lint-results*.xml', unHealthy: ''
                 if(currentBuild.previousBuild!=null && currentBuild.previousBuild.result!=null && !currentBuild.previousBuild.result.toString().equals('SUCCESS'))
                 {
                      sendEmails(DEV_EmailRecipients,BUILD_SUCCESS_AFTER_FAILED,'',false)
                 }
             }
 
-            stage ('Report'){
-                    sh './gradlew lint'
-                    androidLint canComputeNew: false, defaultEncoding: '', healthy: '', pattern: '**/lint-results*.xml', unHealthy: ''
-            }
+//            stage ('Report'){
+//                    sh './gradlew lint'
+//
+//            }
 
             currentBuild.result='SUCCESS'
         }
@@ -56,7 +58,7 @@ node() {
                         {
                             if (branchName == 'develop' || branchName.startsWith('feature')) {
                                 //todo
-                                timeout(time: 120, unit: 'SECONDS')
+                                timeout(time: 60, unit: 'SECONDS')
                                         {
                                             def outcome = input id: 'Want to email build?',
                                                     message: 'Send Build?',
@@ -71,11 +73,32 @@ node() {
 
                                             echo" ans "+outcome
                                             if("Yes".equals(outcome))
-                                                sendEmails(DEV_EmailRecipients,BUILD_PUBLISH_QA_STAGE_SUCCESS, '**/*.apk', false)
+                                                sendEmails(DEV_EmailRecipients,BUILD_PUBLISH_QA_STAGE_SUCCESS, '**/*debug*.apk', false)
                                         }
                             } else if (branchName.startsWith('release')) {
                                 // todo do release code here
-                                sendEmails(DEV_EmailRecipients+" "+QA_EmailRecipients+" "+MNGR_EmailRecipients,BUILD_PUBLISH_QA_STAGE_SUCCESS, '**/*.apk', false)
+                                timeout(time: 60, unit: 'SECONDS')
+                                        {
+                                            def outcome = input id: 'Want to email build?',
+                                                    message: 'Please select your choice?',
+                                                    ok: 'Okay',
+                                                    parameters: [
+                                                            [
+                                                                    $class: 'ChoiceParameterDefinition', choices: 'select\nStage\nProduction\nBoth',
+                                                                    name: 'Take your pick',
+                                                                    description: ''
+                                                            ]
+                                                    ]
+
+                                            echo" ans "+outcome
+                                            if("Stage".equals(outcome))
+                                                sendEmails(DEV_EmailRecipients+" "+QA_EmailRecipients+" "+MNGR_EmailRecipients,BUILD_PUBLISH_QA_STAGE_SUCCESS, '**/*^[debug | release]*.apk', false)
+                                            else if ("Production".equals(outcome))
+                                            sendEmails(DEV_EmailRecipients+" "+QA_EmailRecipients+" "+MNGR_EmailRecipients,BUILD_PUBLISH_QA_STAGE_SUCCESS, '**/*^[debug | stage]*.apk', false)
+                                            else if("Both".equals(outcome) )
+                                                sendEmails(DEV_EmailRecipients+" "+QA_EmailRecipients+" "+MNGR_EmailRecipients,BUILD_PUBLISH_QA_STAGE_SUCCESS, '**/*^[debug]*.apk', false)
+                                        }
+
                             }
 
                         }
@@ -92,7 +115,7 @@ node() {
     }
 
     def sendEmails(emailRecipient,msg,pattern,logAttach) {
-        emailext attachLog: logAttach,body: msg,attachmentsPattern:pattern, subject: '$PROJECT_NAME - Build # $BUILD_NUMBER -'+currentBuild.result, to:emailRecipient
+        emailext attachLog: logAttach,body: msg+"\n"+GIT_COMMIT,attachmentsPattern:pattern, subject: '$PROJECT_NAME - Build # $BUILD_NUMBER -'+currentBuild.result, to:emailRecipient
     }
 
   // stage ('upload')

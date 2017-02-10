@@ -26,18 +26,29 @@ android {
     }
 
     buildTypes {
+        def BASE_URL = "BASE_URL"
+        def STRING = "String"
         release {
             debuggable false
             minifyEnabled true
             shrinkResources true
+            buildConfigField STRING, BASE_URL, "${PROD_SERVICE_URL}"
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             signingConfig signingConfigs.release
 
+        }
+        stage{
+            debuggable true
+            minifyEnabled false
+            shrinkResources false
+            buildConfigField STRING, BASE_URL, "${STAGE_SERVICE_URL}"
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
         debug{
             debuggable true
             minifyEnabled false
             shrinkResources false
+            buildConfigField STRING, BASE_URL, "${QA_SERVICE_URL}"
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
 
@@ -51,7 +62,7 @@ android {
             def version = variant.versionName
             def date = new Date();
             def formattedDate = date.format('ddMMyy_HHmm')
-
+            //def server=RUNNING_ON_SERVER
             def newApkName = project + SEP + buildType + SEP + version + SEP + formattedDate + ".apk"
 
             output.outputFile = new File(output.outputFile.parent, newApkName)
