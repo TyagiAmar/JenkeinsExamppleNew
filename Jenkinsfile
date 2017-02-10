@@ -25,7 +25,7 @@ node() {
             stage ('Build')
             {
                 // todo one time
-                // sh 'chmod a+x ./gradlew'
+                sh 'chmod a+x ./gradlew'
                 if(branchName.startsWith('release'))
                     sh './gradlew clean assemblerelease'
                 else
