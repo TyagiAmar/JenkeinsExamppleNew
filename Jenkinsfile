@@ -82,19 +82,19 @@ node() {
                                                             ],
                                                             [
                                                                     $class: 'StringParameterDefinition',
-                                                                    defaultValue: "abc@kelltontech.com",
+                                                                    defaultValue: "",
                                                                     name: 'Enter emailID to receive build!',
                                                                     description: 'Multiple email id must be separated by single space'
                                                             ]
                                                     ]
 
                                             echo" ans "+outcome
-                                            if("Stage".equals(outcome[0]))
-                                                sendEmails(DEV_EmailRecipients+" "+QA_EmailRecipients+" "+outcome[1],BUILD_PUBLISH_QA_STAGE_SUCCESS, '**/*^[debug | release]*.apk', false)
-                                            else if ("Production".equals(outcome[0]))
-                                            sendEmails(DEV_EmailRecipients+" "+outcome[1],BUILD_PUBLISH_QA_STAGE_SUCCESS, '**/*^[debug | stage]*.apk', false)
-                                            else if("Both".equals(outcome[0]) )
-                                                sendEmails(DEV_EmailRecipients+" "+outcome[1],BUILD_PUBLISH_QA_STAGE_SUCCESS, '**/*^[debug]*.apk', false)
+                                            if("Stage".equals(outcome.get('Take your pick')))
+                                                sendEmails(DEV_EmailRecipients+" "+outcome.get('Enter emailID to receive build!'),BUILD_PUBLISH_QA_STAGE_SUCCESS, '**/*stage*.apk', false)
+                                            else if ("Production".equals(outcome.get('Take your pick')))
+                                            sendEmails(DEV_EmailRecipients+" "+outcome.get('Enter emailID to receive build!'),BUILD_PUBLISH_QA_STAGE_SUCCESS, '**/*release*.apk', false)
+                                            else if("Both".equals(outcome.get('Take your pick')) )
+                                                sendEmails(DEV_EmailRecipients+" "+outcome.get('Enter emailID to receive build!'),BUILD_PUBLISH_QA_STAGE_SUCCESS, '**/*stage*.apk,**/*release*.apk', false)
                                         }
 
                             }
@@ -113,7 +113,7 @@ node() {
     }
 
     def sendEmails(emailRecipient,msg,pattern,logAttach) {
-        emailext attachLog: logAttach,body: msg+"\n"+env.GIT_COMMIT,attachmentsPattern:pattern, subject: '$PROJECT_NAME - Build # $BUILD_NUMBER -'+currentBuild.result, to:emailRecipient
+        emailext attachLog: logAttach,body: msg,attachmentsPattern:pattern, subject: '$PROJECT_NAME - Build # $BUILD_NUMBER -'+currentBuild.result, to:emailRecipient
     }
 
   // stage ('upload')
