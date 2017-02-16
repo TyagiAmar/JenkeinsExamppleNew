@@ -90,11 +90,11 @@ node() {
 
                                             echo" ans "+outcome
                                             if("Stage".equals(outcome.get('Take your pick')))
-                                                sendEmails(DEV_EmailRecipients+" "+outcome.get('Enter emailID to receive build!'),BUILD_PUBLISH_QA_STAGE_SUCCESS, '**/*^[debug | release]*.apk', false)
+                                                sendEmails(DEV_EmailRecipients+" "+outcome.get('Enter emailID to receive build!'),BUILD_PUBLISH_QA_STAGE_SUCCESS, '**/*stage*.apk', false)
                                             else if ("Production".equals(outcome.get('Take your pick')))
-                                            sendEmails(DEV_EmailRecipients+" "+outcome.get('Enter emailID to receive build!'),BUILD_PUBLISH_QA_STAGE_SUCCESS, '**/*^[debug | stage]*.apk', false)
+                                            sendEmails(DEV_EmailRecipients+" "+outcome.get('Enter emailID to receive build!'),BUILD_PUBLISH_QA_STAGE_SUCCESS, '**/*release*.apk', false)
                                             else if("Both".equals(outcome.get('Take your pick')) )
-                                                sendEmails(DEV_EmailRecipients+" "+outcome.get('Enter emailID to receive build!'),BUILD_PUBLISH_QA_STAGE_SUCCESS, '**/*^[debug]*.apk', false)
+                                                sendEmails(DEV_EmailRecipients+" "+outcome.get('Enter emailID to receive build!'),BUILD_PUBLISH_QA_STAGE_SUCCESS, '**/*stage*.apk | **/*release*.apk', false)
                                         }
 
                             }
