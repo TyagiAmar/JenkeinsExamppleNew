@@ -93,16 +93,22 @@ node() {
                                                                     $class: 'ChoiceParameterDefinition', choices: 'select\nStage\nProduction\nBoth',
                                                                     name: 'Take your pick',
                                                                     description: ''
+                                                            ],
+                                                            [
+                                                                    $class: 'StringParameterDefinition',
+                                                                    defaultValue: "abc@kelltontech.com",
+                                                                    name: 'Enter emailID to receive build!',
+                                                                    description: 'Multiple email id must be separated by single space'
                                                             ]
                                                     ]
 
                                             echo" ans "+outcome
-                                            if("Stage".equals(outcome))
-                                                sendEmails(DEV_EmailRecipients+" "+QA_EmailRecipients+" "+MNGR_EmailRecipients,BUILD_PUBLISH_QA_STAGE_SUCCESS, '**/*^[debug | release]*.apk', false)
-                                            else if ("Production".equals(outcome))
-                                            sendEmails(DEV_EmailRecipients+" "+QA_EmailRecipients+" "+MNGR_EmailRecipients,BUILD_PUBLISH_QA_STAGE_SUCCESS, '**/*^[debug | stage]*.apk', false)
-                                            else if("Both".equals(outcome) )
-                                                sendEmails(DEV_EmailRecipients+" "+QA_EmailRecipients+" "+MNGR_EmailRecipients,BUILD_PUBLISH_QA_STAGE_SUCCESS, '**/*^[debug]*.apk', false)
+                                            if("Stage".equals(outcome[0]))
+                                                sendEmails(DEV_EmailRecipients+" "+QA_EmailRecipients+" "+outcome[1],BUILD_PUBLISH_QA_STAGE_SUCCESS, '**/*^[debug | release]*.apk', false)
+                                            else if ("Production".equals(outcome[0]))
+                                            sendEmails(DEV_EmailRecipients+" "+outcome[1],BUILD_PUBLISH_QA_STAGE_SUCCESS, '**/*^[debug | stage]*.apk', false)
+                                            else if("Both".equals(outcome[0]) )
+                                                sendEmails(DEV_EmailRecipients+" "+outcome[1],BUILD_PUBLISH_QA_STAGE_SUCCESS, '**/*^[debug]*.apk', false)
                                         }
 
                             }
