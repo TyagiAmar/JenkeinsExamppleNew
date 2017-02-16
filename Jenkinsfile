@@ -23,31 +23,19 @@ node() {
             stage ('Checkout'){
               checkout scm
             }
-       /* sh 'env > env.txt'
-        readFile('env.txt').split("\r?\n").each {
-            println it
-        }*/
 
             stage ('Build')
             {
                 // todo one time
                 sh 'chmod a+x ./gradlew'
                 sh './gradlew clean lint assemble'
-                /*if(branchName.startsWith('release'))
-                    sh './gradlew clean assembleRelease'
-                else
-                    sh './gradlew clean assembleDebug'*/
+
                 androidLint canComputeNew: false, defaultEncoding: '', healthy: '', pattern: '**/lint-results*.xml', unHealthy: ''
                 if(currentBuild.previousBuild!=null && currentBuild.previousBuild.result!=null && !currentBuild.previousBuild.result.toString().equals('SUCCESS'))
                 {
                      sendEmails(DEV_EmailRecipients,BUILD_SUCCESS_AFTER_FAILED,'',false)
                 }
             }
-
-//            stage ('Report'){
-//                    sh './gradlew lint'
-//
-//            }
 
             currentBuild.result='SUCCESS'
         }
@@ -63,7 +51,6 @@ node() {
                 stage('Publish')
                         {
                             if (branchName == 'develop' || branchName.startsWith('feature')) {
-                                //todo
                                 timeout(time: 60, unit: 'SECONDS')
                                         {
                                             def outcome = input id: 'Want to email build?',
@@ -82,7 +69,6 @@ node() {
                                                 sendEmails(DEV_EmailRecipients,BUILD_PUBLISH_QA_STAGE_SUCCESS, '**/*debug*.apk', false)
                                         }
                             } else if (branchName.startsWith('release')) {
-                                // todo do release code here
                                 timeout(time: 60, unit: 'SECONDS')
                                         {
                                             def outcome = input id: 'Want to email build?',
