@@ -23,10 +23,10 @@ node() {
             stage ('Checkout'){
               checkout scm
             }
-        sh 'env > env.txt'
+       /* sh 'env > env.txt'
         readFile('env.txt').split("\r?\n").each {
             println it
-        }
+        }*/
 
             stage ('Build')
             {
