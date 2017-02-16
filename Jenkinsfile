@@ -113,7 +113,7 @@ node() {
     }
 
     def sendEmails(emailRecipient,msg,pattern,logAttach) {
-        emailext attachLog: logAttach,body: msg+"\n"+env.GIT_COMMIT,attachmentsPattern:pattern, subject: '$PROJECT_NAME - Build # $BUILD_NUMBER -'+currentBuild.result, to:emailRecipient
+        emailext attachLog: logAttach,body: msg,attachmentsPattern:pattern, subject: '$PROJECT_NAME - Build # $BUILD_NUMBER -'+currentBuild.result, to:emailRecipient
     }
 
   // stage ('upload')
