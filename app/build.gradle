@@ -9,7 +9,8 @@ android {
         minSdkVersion 23
         targetSdkVersion 25
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
-        versionCode buildVersionCode()
+        // versionCode buildVersionCode()
+        versionCode System.getenv("BUILD_NUMBER")  as Integer ?: 0
         versionName "${VERSION_NAME}"
         project.version = android.defaultConfig.versionName
         def APP_VERSION = "APP_VERSION"
@@ -60,9 +61,11 @@ android {
             def SEP = "_"
             def buildType = variant.variantData.variantConfiguration.buildType.name
             def version = variant.versionName
-            def date = new Date();
-            def formattedDate = date.format('ddMMyy_HHmm')
-            def newApkName = project + SEP + buildType + SEP + version + SEP + formattedDate + ".apk"
+            def version_code=variant.versionCode
+            /*def date = new Date();
+            def formattedDate = date.format('ddMMyy_HHmm')*/
+            //def newApkName = project + SEP + buildType + SEP + version  + SEP + formattedDate + ".apk"
+            def newApkName = project + SEP + buildType + SEP + version + '.' + version_code  + ".apk"
 
             output.outputFile = new File(output.outputFile.parent, newApkName)
         }
