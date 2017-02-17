@@ -20,9 +20,7 @@ node() {
     echo" branch name "+branchName
     echo" GIT COMMIT name "+env.GIT_COMMIT
     gitCommit = sh(returnStdout: true, script: 'git rev-parse HEAD').trim()
-// short SHA, possibly better for chat notifications, etc.
-    shortCommit = gitCommit.take(6)
-    echo" valueee "+shortCommit
+    echo" valueee "+gitCommit
     try {
             stage ('Checkout'){
               checkout scm
@@ -57,7 +55,7 @@ node() {
                             if (branchName == 'develop' || branchName.startsWith('feature')) {
                                 timeout(time: 60, unit: 'SECONDS')
                                         {
-                                            def outcome = input id: 'Want to email build?',
+                                           /* def outcome = input id: 'Want to email build?',
                                                     message: 'Send Build?',
                                                     ok: 'Okay',
                                                     parameters: [
@@ -69,7 +67,8 @@ node() {
                                                     ]
 
                                             echo" ans "+outcome
-                                            if("Yes".equals(outcome))
+                                            if("Yes".equals(outcome))*/
+                                            input message: 'Want to email build to developer?'
                                                 sendEmails(DEV_EmailRecipients,BUILD_PUBLISH_QA_STAGE_SUCCESS, '**/*debug*.apk', false)
                                         }
                             } else if (branchName.startsWith('release')) {
