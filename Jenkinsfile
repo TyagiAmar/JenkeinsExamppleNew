@@ -19,6 +19,10 @@ node() {
     String branchName = env.BRANCH_NAME
     echo" branch name "+branchName
     echo" GIT COMMIT name "+env.GIT_COMMIT
+    gitCommit = sh(returnStdout: true, script: 'git rev-parse HEAD').trim()
+// short SHA, possibly better for chat notifications, etc.
+    shortCommit = gitCommit.take(6)
+    echo" valueee "+shortCommit
     try {
             stage ('Checkout'){
               checkout scm
