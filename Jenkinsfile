@@ -1,11 +1,11 @@
 #!groovy
 
-/*def DEV_EmailRecipients='amar.tyagi@kelltontech.com'
+def DEV_EmailRecipients='amar.tyagi@kelltontech.com'
 def QA_EmailRecipients='pratap.hada@kelltontech.com'
 def MNGR_EmailRecipients='vijay.kumar@kelltontech.com'
 
 def QA_BuildAuthorization='amar.tyagi@kelltontech.com'
-def PROD_BuildAuthorization='vijay.kumar@kelltontech.com'*/
+def PROD_BuildAuthorization='vijay.kumar@kelltontech.com'
 
 
 // Constants variable used below for msg
